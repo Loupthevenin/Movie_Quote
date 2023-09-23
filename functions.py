@@ -1,12 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
 
-
 url_movie = "https://www.kaakook.fr/film-"  # 20 citations par page
 
 ids_movie = [29, 67, 68, 1691]  # matrix, matrix 2, matrix 3, inception+
 
 quote_list = []  # liste de toutes les citations
+character_list = []  # liste de tout les personnages de chaque citation
 
 
 def find_number_pages(id_number) -> int:
@@ -36,9 +36,18 @@ def find_number_boucle(analyse_number) -> int:
     return 1
 
 
-def list_quote(id_number, page_number):
-    html_pages = requests.get(f"{url_movie}{ids_movie[id_number]}-{page_number}")
+def list_quote(id_number_movie, page_number):
+    html_pages = requests.get(f"{url_movie}{ids_movie[id_number_movie]}-{page_number}")
     soup = BeautifulSoup(html_pages.text, 'html.parser')
     quote_links = soup.find_all('a', href=lambda href: href and '/citation-' in href)
     for link in quote_links:
         quote_list.append(link.text)
+
+
+def list_character(id_number_movie, page_number):
+    html_pages = requests.get(f"{url_movie}{ids_movie[id_number_movie]}-{page_number}")
+    soup = BeautifulSoup(html_pages.text, 'html.parser')
+    # character_links = soup.find_all('a', href=lambda href: href and '/perso-' in href)
+    character_links = soup.find_all('footer')
+    for link in character_links:
+        character_list.append(link.text)
