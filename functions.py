@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import math
 
 url_movie = "https://www.kaakook.fr/film-"  # 20 citations par page
 
@@ -45,19 +46,7 @@ def find_tag_dd(soup, number_of_dd):
 def find_number_pages(id_number) -> int:
     soups = html_soup(url_movie, id_number, 1)
     number_quote = find_tag_dd(soups, 4)
-    return find_number_boucle(analyse_number=number_quote)
-
-
-# Trouve le nombre de page a l'aide du nombre de citation
-def find_number_boucle(analyse_number) -> int:
-    seuils = [160, 140, 120, 100, 80, 60, 40, 20]
-    valeurs = [9, 8, 7, 6, 5, 4, 3, 2]
-
-    for seuil, valeur in zip(seuils, valeurs):
-        if analyse_number > seuil:
-            return valeur
-
-    return 1
+    return math.ceil(number_quote/20)
 
 
 # Determine une liste de toutes les citations
