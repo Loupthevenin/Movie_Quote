@@ -4,10 +4,11 @@ import math
 
 url_movie = "https://www.kaakook.fr/film-"  # 20 citations par page
 
-ids_movie = [29, 67, 68, 1691]  # matrix, matrix 2, matrix 3, inception+
+ids_movie = [29, 67, 68, 993, 997, 1691]  # matrix, matrix 2, matrix 3, inception, Donnie Darko, HP 1,
 
 quote_list = []  # liste de toutes les citations
-character_list = []  # liste de tout les personnages de chaque citation
+character_list = []  # liste de tous les personnages de chaque citation
+ids_list = []
 
 
 def html_soup(url, ids, pages):
@@ -50,14 +51,16 @@ def find_number_pages(id_number) -> int:
 
 
 # Determine une liste de toutes les citations
-def list_quote(id_number_movie, page_number):
+def list_quote_ids(id_number_movie, page_number):
     soups = html_soup(url_movie, ids_movie[id_number_movie], page_number)
     quote_links = soups.find_all('a', href=lambda href: href and '/citation-' in href)
     for link in quote_links:
         quote_list.append(link.text)
+        if link.text != "Traduction":
+            ids_list.append(ids_movie[id_number_movie])
 
 
-# Determine une liste de tout les personnages
+# Determine une liste de tous les personnages
 def list_character(id_number_movie, page_number):
     soups = html_soup(url_movie, ids_movie[id_number_movie], page_number)
     character_links = soups.find_all('footer')
