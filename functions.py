@@ -2,13 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import math
 
-url_movie = "https://www.kaakook.fr/film-"  # 20 citations par page
-
-ids_movie = [29, 67, 68, 993, 997, 1691]  # matrix, matrix 2, matrix 3, inception, Donnie Darko, HP 1,
-
-quote_list = []  # liste de toutes les citations
-character_list = []  # liste de tous les personnages de chaque citation
-ids_list = []
+from settings import *
 
 
 def html_soup(url, ids, pages):
