@@ -1,9 +1,9 @@
 from functions import *
+from settings import *
 import json
 import os
 
 
-path = os.path.join(os.path.dirname(__file__), 'data_movies.json')
 data_movies = {"title_movies": [],
                "type_movie": [],
                "id_movies": [],
@@ -17,8 +17,8 @@ state_number = 3300
 i = 1
 
 
-if not os.path.exists(path):
-    with open(path, 'w') as file_json:
+if not os.path.exists(path_movie):
+    with open(path_movie, 'w') as file_json:
         json.dump({}, file_json)
 
 
@@ -41,7 +41,7 @@ def update_database(data):
         data['number_quotes'].append(find_tag_dd(soups, 4))
 
 
-with open(path, 'r', encoding="utf-8") as f:
+with open(path_movie, 'r', encoding="utf-8") as f:
     db = json.load(f)
 
 
@@ -71,8 +71,8 @@ else:
 
 
 if encode == 1:
-    with open(path, 'w', encoding="utf-8") as f:
+    with open(path_movie, 'w', encoding="utf-8") as f:
         json.dump(db, f, ensure_ascii=False, indent=4)
 elif encode == 2:
-    with open(path, 'w', encoding="utf-8") as f:
+    with open(path_movie, 'w', encoding="utf-8") as f:
         json.dump(data_movies, f, ensure_ascii=False, indent=4)

@@ -8,12 +8,12 @@ from settings import *
 if __name__ == '__main__':
 
     # on vérifie si le fichier json existe et on le crée sinon
-    if not os.path.exists(path):
-        with open(path, 'w') as file_json:
+    if not os.path.exists(path_quote):
+        with open(path_quote, 'w') as file_json:
             json.dump({}, file_json)
 
     # On stock notre base de donnée dans une variable
-    with open(path, 'r', encoding="utf-8") as data_json:
+    with open(path_quote, 'r', encoding="utf-8") as data_json:
         data = json.load(data_json)
 
     # On vérifie si notre fichier json contient deja nos films et on modifie la liste en fonction
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         # DATA tri
         data = {key: [value for _, value in sorted(zip(data["ids"], values))] for key, values in data.items()}
 
-        with open(path, 'w', encoding="utf-8") as f:
+        with open(path_quote, 'w', encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
         print(len(data["quotes"]))
