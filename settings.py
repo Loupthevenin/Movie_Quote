@@ -26,3 +26,4 @@ ids_movie = [29, 67, 68, 993, 997, 1691]
 quote_list = []  # liste de toutes les citations
 character_list = []  # liste de tous les personnages de chaque citation
 ids_list = []   # liste de tous les ids de chaque citation
+remove_ids_list = []    # liste pour supprimer des films dans la base de donnée
