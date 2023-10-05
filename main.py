@@ -5,7 +5,11 @@ from functions import *
 from settings import *
 
 
-if __name__ == '__main__':
+def main():
+    # On clear les listes
+    quote_list.clear()
+    ids_list.clear()
+    character_list.clear()
 
     # on vérifie si le fichier json existe et on le crée sinon
     if not os.path.exists(path_quote):
@@ -16,6 +20,17 @@ if __name__ == '__main__':
     with open(path_quote, 'r', encoding="utf-8") as data_json:
         data = json.load(data_json)
 
+    # On vérifie s'il y a des films à retirer
+    if remove_ids_list:
+        remove_index = []
+        for num, line in enumerate(data["ids"]):
+            if line in remove_ids_list:
+                remove_index.append(num)
+        for remove_value in reversed(remove_index):
+            del data["ids"][remove_value]
+            del data["quotes"][remove_value]
+            del data["character"][remove_value]
+
     # On vérifie si notre fichier json contient deja nos films et on modifie la liste en fonction
     if base_data.keys() == data.keys() and data["ids"]:
         remove_list = list(set(data['ids']))
@@ -23,7 +38,6 @@ if __name__ == '__main__':
             if value_remove in ids_movie:
                 ids_movie.remove(value_remove)
     elif base_data.keys() != data.keys():
-        print('yes')
         data = base_data
 
     # On exécute le code qui va scrap toutes les citations de films/perso qui n'est pas encore dans le fichier json
@@ -41,15 +55,15 @@ if __name__ == '__main__':
             print("Probleme")
 
     if len(ids_movie) > 0:
-        data["ids"] = [item for item in data["ids"] + ids_list]
-        data["quotes"] = [item for item in data["quotes"] + quote_list if "Traduction" not in item]
+        data["ids"].extend(ids_list)
+        data["quotes"].extend([item for item in quote_list if "Traduction" not in item])
 
         character_str = " ".join(character_list)
         character_str = re.sub(FILTRE, '', character_str)
         for element in FILTRE_syntax:
             if element in character_str:
                 character_str = character_str.replace(element, "Dr")
-        data["character"] = [element.strip() for element in data["character"] + character_str.split('.') if element.strip()]
+        data["character"].extend([element.strip() for element in character_str.split('.') if element.strip()])
 
         # DATA tri
         data = {key: [value for _, value in sorted(zip(data["ids"], values))] for key, values in data.items()}
@@ -57,11 +71,19 @@ if __name__ == '__main__':
         with open(path_quote, 'w', encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
-        print(len(data["quotes"]))
-        print(len(data["character"]))
-        print(len(data["ids"]))
     elif len(ids_movie) == 0:
-        print("Les données sont déjà sauvegardé.")
-        print(len(data["quotes"]))
-        print(len(data["character"]))
-        print(len(data["ids"]))
+        with open(path_quote, 'w', encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+
+    # On vérifie les données
+    if len(data["quotes"]) == len(data["character"]) == len(data["ids"]):
+        print("Données sauvegardés !")
+    else:
+        print(f"Actualiser le filtre en consequence :")
+        print(f"Quotes : {len(data['quotes'])}")
+        print(f"character : {len(data['character'])}")
+        print(f"Ids : {len(data['ids'])}")
+
+
+if __name__ == '__main__':
+    main()
