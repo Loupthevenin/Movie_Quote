@@ -44,19 +44,13 @@ def find_number_pages(id_number) -> int:
     return math.ceil(number_quote/20)
 
 
-# Determine une liste de toutes les citations
-def list_quote_ids(id_number_movie, page_number):
+# Determine des listes de citations, personnages, ids
+def list_all(id_number_movie, page_number):
     soups = html_soup(url_movie, ids_movie[id_number_movie], page_number)
-    quote_links = soups.find_all('a', href=lambda href: href and '/citation-' in href)
-    for link in quote_links:
-        quote_list.append(link.text)
-        if link.text != "Traduction":
-            ids_list.append(ids_movie[id_number_movie])
-
-
-# Determine une liste de tous les personnages
-def list_character(id_number_movie, page_number):
-    soups = html_soup(url_movie, ids_movie[id_number_movie], page_number)
-    character_links = soups.find_all('footer')
-    for link in character_links:
-        character_list.append(link.text)
+    block_links = soups.find_all("blockquote")
+    for block_link in block_links:
+        tag_quote = block_link.find("a")
+        tag_character = block_link.find("footer")
+        quote_list.append(tag_quote.get_text())
+        character_list.append(tag_character.get_text())
+        ids_list.append(ids_movie[id_number_movie])

@@ -44,13 +44,11 @@ def main():
     for id_movie in range(0, len(ids_movie)):
         number_page = find_number_pages(ids_movie[id_movie])
         if number_page == 1:
-            list_quote_ids(id_movie, number_page)
-            list_character(id_movie, number_page)
+            list_all(id_movie, number_page)
         elif number_page > 1:
             for i in range(1, number_page + 1):
                 number_page = i
-                list_quote_ids(id_movie, number_page)
-                list_character(id_movie, number_page)
+                list_all(id_movie, number_page)
         else:
             print("Probleme")
 
@@ -61,12 +59,16 @@ def main():
         character_str = " ".join(character_list)
         character_str = re.sub(FILTRE, '', character_str)
         for element in FILTRE_syntax:
-            if element in character_str:
+            if element in character_str and element == "Dr.":
                 character_str = character_str.replace(element, "Dr")
-        data["character"].extend([element.strip() for element in character_str.split('.') if element.strip()])
-
-        # DATA tri
-        data = {key: [value for _, value in sorted(zip(data["ids"], values))] for key, values in data.items()}
+            elif element in character_str and element == "C.I.A":
+                character_str = character_str.replace(element, "CIA")
+            elif element in character_str and element == "J.":
+                character_str = character_str.replace(element, "J")
+            elif element in character_str and element == "2.":
+                character_str = character_str.replace(element, ".")
+            character_str = re.sub(r'\s+\s+\s+', '.', character_str.strip())
+        data["character"].extend([element.strip() for element in re.split(r'[.]', character_str) if element.strip()])
 
         with open(path_quote, 'w', encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
